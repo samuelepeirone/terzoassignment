@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
+
+body {
+    font-family: Poppins, sans-serif;
+    background-color: #FAD6A5;
+}
+
+.card {
+    margin: auto;
+    background-color: white;
+    text-align: left;
+    border-radius: 24px;
+    padding: 20px;
+}
+
+.card h4 {
+    margin-left: 50px;
+}
+
+.buttonsdiv {
+    margin-top: 30px;
+    margin-left: 50px;
+}
+
+.buttoncanvas {
+    width: 130px;
+    font-family: Poppins, sans-serif;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 19px;
+    padding-right: 19px;
+    background-color: white;
+    border: 2px solid #FAD6A5;
+    border-radius: 24px;
+    cursor: pointer;
+}
+
+.buttoncanvas:hover {
+    color: #FAD6A5;
+}
+
+.buttoncanvasselected {
+    width: 130px;
+    font-family: Poppins, sans-serif;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #FAD6A5;
+    border: none;
+    border-radius: 24px;
+    cursor: not-allowed;
+}
+
+.card-body {
+    font-family: Poppins, sans-serif;
+    text-align: center;
+}
+
+.card-body canvas {
+    margin: auto;
+}

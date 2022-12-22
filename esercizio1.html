@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ChartJS - read JSON from URL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <script type="module" src="./index.js"></script>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="card" style="width: 700px;">
+        <h4>Casi Covid-19</h4>
+        <div class="buttonsdiv">
+            <button class="buttoncanvas" onclick="Data('ott')" id="ottobrebutton">Ottobre</button>
+            <button class="buttoncanvas" onclick="Data('nov')" id="novembrebutton">Novembre</button>
+        </div>
+        <div class="buttonsdiv">
+            <button class="buttoncanvasselected" onclick="Luogo('Piemonte')" id="piemontebutton" disabled>Piemonte</button>
+            <button class="buttoncanvas" onclick="Luogo('Torino')" id="torinobutton">Torino</button>
+        </div>
+        <div class="card-body">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+    <script>
+        Chart.defaults.global.defaultFontFamily = 'Poppins';
+        Chart.defaults.global.defaultFontSize = 12;
+        Chart.defaults.global.defaultFontColor = 'black';
+
+        var date = ["16-ott", "17-ott", "18-ott", "19-ott", "20-ott", "21-ott", "22-ott", "23-ott", "24-ott", "25-ott", "26-ott", "27-ott", "28-ott", "29-ott", "30-ott", "31-ott", "01-nov", "02-nov", "03-nov", "04-nov", "05-nov", "06-nov", "07-nov", "08-nov", "09-nov", "10-nov", "11-nov", "12-nov", "13-nov", "14-nov", "15-nov", "16-nov", "17-nov", "18-nov", "19-nov", "20-nov", "21-nov", "22-nov", "23-nov", "24-nov", "25-nov", "26-nov", "27-nov", "28-nov", "29-nov", "30-nov", "01-dic", "02-dic"];
+        var decessiTotPiemonte = [111, 144, 166, 183, 224, 255, 300, 336, 403, 483, 545, 598, 662, 734, 795, 854, 924, 1018, 1088, 1144, 1191, 1284, 1349, 1417, 1487, 1591, 1689, 1788, 1876, 1969, 2064, 2146, 2224, 2302, 2379, 2453, 2524, 2598, 2668, 2737, 2803, 2859, 2913, 2966, 3032, 3086, 3111, 3144];
+        var decessiTotTorino = [20, 25, 35, 37, 49, 62, 70, 86, 105, 153, 170, 193, 213, 236, 271, 303, 339, 382, 416, 443, 464, 507, 542, 572, 605, 641, 689, 727, 763, 803, 845, 888, 918, 942, 991, 1029, 1072, 1105, 1137, 1175, 1217, 1258, 1287, 1312, 1346, 1378, 1386, 1400];
+        var contagiTotPiemonte = [1516, 2063, 2659, 3017, 3576, 4059, 4541, 5094, 5767, 6193, 6708, 7228, 7920, 8461, 8835, 9418, 9918, 10466, 11082, 11839, 12442, 13046, 13434, 13964, 14671, 15412, 16109, 16733, 17246, 17773, 18446, 19261, 19954, 20581, 21144, 21437, 22149, 22854, 23319, 24050, 24549, 24910, 25216, 25538, 25995, 26453, 26767, 27317];
+        var contagiTotTorino = [542, 904, 1171, 1360, 1590, 1788, 2018, 2317, 2660, 2902, 3149, 3435, 3772, 4012, 4193, 4512, 4751, 5044, 5389, 5804, 6018, 6246, 6425, 6622, 6992, 7375, 7642, 7978, 8161, 8383, 8753, 9173, 9543, 9871, 10157, 10319, 10699, 11091, 11329, 11765, 12031, 12235, 12401, 12625, 12938, 13164, 13352, 13702];
+        var tamponiTotPiemonte = [5589, 6872, 8140, 9424, 10590, 11799, 12869, 14619, 16110, 17509, 18486, 20197, 22829, 24782, 26578, 28918, 31135, 33431, 36547, 38638, 40638, 43306, 46927, 51311, 55548, 60271, 65391, 69003, 71615, 74060, 78066, 83130, 89136, 94278, 99008, 102082, 107850, 113930, 120387, 127108, 132510, 137069, 140996, 146173, 152447, 158762, 164053, 170109];
+        var chart;
+        var ctx = document.getElementById('canvas').getContext('2d');
+        var config = {
+            type: 'line',
+            data: {
+                labels: date,
+                datasets: [{
+                    label: 'decessi totali',
+                    data: decessiTotPiemonte,
+                    borderColor: '#2B3467',
+                }, {
+                    label: 'contagi totali',
+                    data: contagiTotPiemonte,
+                    borderColor: '#EB455F',
+                },
+                {
+                    label: 'tamponi totali (Piemonte)',
+                    data: tamponiTotPiemonte,
+                    borderColor: '#BAD7E9',
+                }
+                ]
+            },
+            options: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        fontColor: 'black',
+                        pointStyle: 'circle',
+                        usePointStyle: true,
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 0,
+                        bottom: 0,
+                        top: 0
+                    }
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
+        };
+        chart = new Chart(ctx, config);
+        Data("ott");
+        function Data(mese){
+            cambiabottonemesi();
+            const ndate = [];
+            const ndecessiTotPiemonte = [];
+            const ndecessiTotTorino = [];
+            const ncontagiTotPiemonte = [];
+            const ncontagiTotTorino = [];
+            const ntamponiTotPiemonte = [];
+            for(var i=0; i<date.length; i++){
+                var substringa = String(date[i]).substring(3);
+                if(substringa == mese){
+                    var j = ndate.length;
+                    ndate[j]=date[i].substring(0, 2);
+                    ndecessiTotPiemonte[j]=decessiTotPiemonte[i];
+                    ndecessiTotTorino[j]=decessiTotTorino[i];
+                    ncontagiTotPiemonte[j]=contagiTotPiemonte[i];
+                    ncontagiTotTorino[j]=contagiTotTorino[i];
+                    ntamponiTotPiemonte[j]=tamponiTotPiemonte[i];
+                }
+            }
+            assegnadati(ndate, ndecessiTotPiemonte, ndecessiTotTorino, ncontagiTotPiemonte, ncontagiTotTorino, ntamponiTotPiemonte);
+        }
+        function DataNoCambio(mese){
+            const ndate = [];
+            const ndecessiTotPiemonte = [];
+            const ndecessiTotTorino = [];
+            const ncontagiTotPiemonte = [];
+            const ncontagiTotTorino = [];
+            const ntamponiTotPiemonte = [];
+            for(var i=0; i<date.length; i++){
+                var substringa = String(date[i]).substring(3);
+                if(substringa == mese){
+                    var j = ndate.length;
+                    ndate[j]=date[i].substring(0, 2);
+                    ndecessiTotPiemonte[j]=decessiTotPiemonte[i];
+                    ndecessiTotTorino[j]=decessiTotTorino[i];
+                    ncontagiTotPiemonte[j]=contagiTotPiemonte[i];
+                    ncontagiTotTorino[j]=contagiTotTorino[i];
+                    ntamponiTotPiemonte[j]=tamponiTotPiemonte[i];
+                }
+            }
+            assegnadati(ndate, ndecessiTotPiemonte, ndecessiTotTorino, ncontagiTotPiemonte, ncontagiTotTorino, ntamponiTotPiemonte);
+        }
+        function cambiabottonemesi(){
+            if(document.getElementById("ottobrebutton").classList == "buttoncanvas"){
+                document.getElementById("ottobrebutton").classList.add('buttoncanvasselected');
+                document.getElementById("ottobrebutton").classList.remove('buttoncanvas');
+                document.getElementById("ottobrebutton").disabled=true;
+                document.getElementById("novembrebutton").classList.add('buttoncanvas');
+                document.getElementById("novembrebutton").classList.remove('buttoncanvasselected');
+                document.getElementById("novembrebutton").disabled=false;
+            }
+            else{
+                document.getElementById("novembrebutton").classList.add('buttoncanvasselected');
+                document.getElementById("novembrebutton").classList.remove('buttoncanvas');
+                document.getElementById("novembrebutton").disabled=true;
+                document.getElementById("ottobrebutton").classList.add('buttoncanvas');
+                document.getElementById("ottobrebutton").classList.remove('buttoncanvasselected');
+                document.getElementById("ottobrebutton").disabled=false;
+            }
+        }
+        function assegnadati(vdate, vdecessiTotPiemonte, vdecessiTotTorino, vcontagiTotPiemonte, vcontagiTotTorino, vtamponiTotPiemonte){
+            chart.data.labels = vdate;
+            chart.data.datasets[2].data = vtamponiTotPiemonte;
+            if(document.getElementById("piemontebutton").disabled==true){
+                chart.data.datasets[0].data = vdecessiTotPiemonte;
+                chart.data.datasets[1].data = vcontagiTotPiemonte;
+            }
+            else if(document.getElementById("torinobutton").disabled==true){
+                chart.data.datasets[0].data = vdecessiTotTorino;
+                chart.data.datasets[1].data = vcontagiTotTorino;
+            }
+            chart.update();
+        }
+        function Luogo(){
+            if(document.getElementById("piemontebutton").classList == "buttoncanvas"){
+                document.getElementById("piemontebutton").classList.add('buttoncanvasselected');
+                document.getElementById("piemontebutton").classList.remove('buttoncanvas');
+                document.getElementById("piemontebutton").disabled=true;
+                document.getElementById("torinobutton").classList.add('buttoncanvas');
+                document.getElementById("torinobutton").classList.remove('buttoncanvasselected');
+                document.getElementById("torinobutton").disabled=false;
+            }
+            else{
+                document.getElementById("torinobutton").classList.add('buttoncanvasselected');
+                document.getElementById("torinobutton").classList.remove('buttoncanvas');
+                document.getElementById("torinobutton").disabled=true;
+                document.getElementById("piemontebutton").classList.add('buttoncanvas');
+                document.getElementById("piemontebutton").classList.remove('buttoncanvasselected');
+                document.getElementById("piemontebutton").disabled=false;
+            }
+            if(document.getElementById("ottobrebutton").disabled==true){
+                DataNoCambio("ott");
+            }
+            else {
+                DataNoCambio("nov");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

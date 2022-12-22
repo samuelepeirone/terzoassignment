@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ChartJS - read JSON from URL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body onload="aggiornamentodati()">
+    <div class="card">
+        <h4>Casi Covid-19, aggiornati in tempo reale da: https://pomber.github.io/covid19/timeseries.json</h4>
+        <div class="buttonsdiv">
+            <button class="buttoncanvasselected" onclick="Italydata()" id="italybutton" disabled>Italia</button>
+            <button class="buttoncanvas" onclick="Afghanistandata()" id="afghanistanbutton">Afghanistan</button>
+            <button class="buttoncanvas" onclick="Mexicodata()" id="mexicobutton">Messico</button>
+            <br><br>
+            <input type="checkbox" id="check" onclick="controllacheckbox()"><label for="check">Visualizza solo dati da
+                marzo 2020 a giugno 2020</label>
+        </div>
+        <div class="card-body">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+    <hr>
+    <div class="card" style="width: 700px;">
+        <h4>Casi confermati di covid real-time</h4>
+        <div class="card-body">
+            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+        </div>
+    </div>
+    <script>
+        /*CHART 1*/
+        Chart.defaults.global.defaultFontFamily = 'Poppins';
+        Chart.defaults.global.defaultFontSize = 12;
+        Chart.defaults.global.defaultFontColor = 'black';
+        var date, confirmed, recovered, deaths;
+        var xmlhttp = new XMLHttpRequest();
+        var chart;
+        var myObj;
+        var ndate, nconfirmed, nrecovered, ndeaths;
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                myObj = JSON.parse(this.responseText);
+                date = myObj.Italy.map(function (e) {
+                    return e.date;
+                });
+                confirmed = myObj.Italy.map(function (e) {
+                    return e.confirmed;
+                });
+                recovered = myObj.Italy.map(function (e) {
+                    return e.recovered;
+                })
+                deaths = myObj.Italy.map(function (e) {
+                    return e.deaths;
+                });
+                var ctx = document.getElementById('canvas').getContext('2d');
+                var config = {
+                    type: 'line',
+                    data: {
+                        labels: date,
+                        datasets: [{
+                            label: 'confirmed',
+                            data: confirmed,
+                            borderColor: '#2B3467',
+                        }, {
+                            label: 'recovered',
+                            data: recovered,
+                            borderColor: '#EB455F',
+                        },
+                        {
+                            label: 'deaths',
+                            data: deaths,
+                            borderColor: '#BAD7E9',
+                        }
+                        ]
+                    },
+                    options: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                fontColor: 'black',
+                                pointStyle: 'circle',
+                                usePointStyle: true,
+                            }
+                        },
+                        layout: {
+                            padding: {
+                                left: 50,
+                                right: 0,
+                                bottom: 0,
+                                top: 0
+                            }
+                        },
+                        tooltips: {
+                            enabled: true
+                        }
+                    }
+                };
+                chart = new Chart(ctx, config);
+            }
+        };
+        function Italydata() {
+            document.getElementById("italybutton").classList.add('buttoncanvasselected');
+            document.getElementById("italybutton").classList.remove('buttoncanvas');
+            document.getElementById("italybutton").disabled=true;
+            document.getElementById("afghanistanbutton").classList.add('buttoncanvas');
+            document.getElementById("afghanistanbutton").classList.remove('buttoncanvasselected');
+            document.getElementById("afghanistanbutton").disabled=false;
+            document.getElementById("mexicobutton").classList.add('buttoncanvas');
+            document.getElementById("mexicobutton").classList.remove('buttoncanvasselected');
+            document.getElementById("mexicobutton").disabled=false;
+            ndate = myObj.Italy.map(function (e) {
+                return e.date;
+            });
+            nconfirmed = myObj.Italy.map(function (e) {
+                return e.confirmed;
+            });
+            nrecovered = myObj.Italy.map(function (e) {
+                return e.recovered;
+            })
+            ndeaths = myObj.Italy.map(function (e) {
+                return e.deaths;
+            });
+            if (document.getElementById("check").checked) {
+                visualizzamarzogiugnodati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+            else {
+                assegnadati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+        }
+        function Afghanistandata() {
+            document.getElementById("afghanistanbutton").classList.add('buttoncanvasselected');
+            document.getElementById("afghanistanbutton").classList.remove('buttoncanvas');
+            document.getElementById("afghanistanbutton").disabled=true;
+            document.getElementById("italybutton").classList.add('buttoncanvas');
+            document.getElementById("italybutton").classList.remove('buttoncanvasselected');
+            document.getElementById("italybutton").disabled=false;
+            document.getElementById("mexicobutton").classList.add('buttoncanvas');
+            document.getElementById("mexicobutton").classList.remove('buttoncanvasselected');
+            document.getElementById("mexicobutton").disabled=false;
+            ndate = myObj.Afghanistan.map(function (e) {
+                return e.date;
+            });
+            nconfirmed = myObj.Afghanistan.map(function (e) {
+                return e.confirmed;
+            });
+            nrecovered = myObj.Afghanistan.map(function (e) {
+                return e.recovered;
+            })
+            ndeaths = myObj.Afghanistan.map(function (e) {
+                return e.deaths;
+            });
+            if (document.getElementById("check").checked) {
+                visualizzamarzogiugnodati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+            else {
+                assegnadati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+        }
+        function Mexicodata() {
+            document.getElementById("mexicobutton").classList.add('buttoncanvasselected');
+            document.getElementById("mexicobutton").classList.remove('buttoncanvas');
+            document.getElementById("mexicobutton").disabled=true;
+            document.getElementById("italybutton").classList.add('buttoncanvas');
+            document.getElementById("italybutton").classList.remove('buttoncanvasselected');
+            document.getElementById("italybutton").disabled=false;
+            document.getElementById("afghanistanbutton").classList.add('buttoncanvas');
+            document.getElementById("afghanistanbutton").classList.remove('buttoncanvasselected');
+            document.getElementById("afghanistanbutton").disabled=false;
+
+            ndate = myObj.Mexico.map(function (e) {
+                return e.date;
+            });
+            nconfirmed = myObj.Mexico.map(function (e) {
+                return e.confirmed;
+            });
+            nrecovered = myObj.Mexico.map(function (e) {
+                return e.recovered;
+            })
+            ndeaths = myObj.Mexico.map(function (e) {
+                return e.deaths;
+            });
+            if (document.getElementById("check").checked) {
+                visualizzamarzogiugnodati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+            else {
+                assegnadati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+        }
+        function controllacheckbox() {
+            if (document.getElementById("check").checked) {
+                visualizzamarzogiugno();
+            }
+            else {
+                assegnadati(ndate, nconfirmed, nrecovered, ndeaths);
+            }
+        }
+        function visualizzamarzogiugno() {
+            ndate = chart.data.labels;
+            nconfirmed = chart.data.datasets[0].data;
+            nrecovered = chart.data.datasets[1].data;
+            ndeaths = chart.data.datasets[2].data;
+            const vdate = [];
+            const vconfirmed = [];
+            const vrecovered = [];
+            const vdeaths = [];
+            for (var i = 0; i < ndate.length; i++) {
+                var substringa = String(ndate[i]).substring(0, 6);
+                if (substringa == "2020-3" || substringa == "2020-4" || substringa == "2020-5" || substringa == "2020-6") {
+                    var j = vdate.length;
+                    vdate[j] = String(ndate[i]).substring(5);
+                    vconfirmed[j] = nconfirmed[i];
+                    vrecovered[j] = nrecovered[i];
+                    vdeaths[j] = ndeaths[i];
+                }
+            }
+            assegnadati(vdate, vconfirmed, vrecovered, vdeaths);
+        }
+        function visualizzamarzogiugnodati(data1, data2, data3, data4) {
+            ndate = data1
+            nconfirmed = data2;
+            nrecovered = data3;
+            ndeaths = data4;
+            const vdate = [];
+            const vconfirmed = [];
+            const vrecovered = [];
+            const vdeaths = [];
+            for (var i = 0; i < ndate.length; i++) {
+                var substringa = String(ndate[i]).substring(0, 6);
+                if (substringa == "2020-3" || substringa == "2020-4" || substringa == "2020-5" || substringa == "2020-6") {
+                    var j = vdate.length;
+                    vdate[j] = String(ndate[i]).substring(5);
+                    vconfirmed[j] = nconfirmed[i];
+                    vrecovered[j] = nrecovered[i];
+                    vdeaths[j] = ndeaths[i];
+                }
+            }
+            assegnadati(vdate, vconfirmed, vrecovered, vdeaths);
+        }
+        function assegnadati(data1, data2, data3, data4) {
+            chart.data.labels = data1;
+            chart.data.datasets[0].data = data2;
+            chart.data.datasets[1].data = data3;
+            chart.data.datasets[2].data = data4;
+            chart.update();
+        }
+        xmlhttp.open("GET", "https://pomber.github.io/covid19/timeseries.json", true);
+        xmlhttp.send();
+
+        /*CHART 2*/
+        var barColors = ["#E8C07D", "#9FC088", "#A25B5B"];
+        var myObj;
+        var italy, afghanistan, mexico;
+        var labels1 = ["Italia", "Francia", "Spagna"];
+        var data1;
+        var l;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                myObj = JSON.parse(this.responseText);
+                italy = myObj.Italy.map(function (e) {
+                    return e.confirmed;
+                });
+                france = myObj.France.map(function (e) {
+                    return e.confirmed;
+                });
+                spain = myObj.Spain.map(function (e) {
+                    return e.confirmed;
+                });
+                l = italy.length;
+                data1 = [parseInt(italy[l - 1]), parseInt(france[l - 1]), parseInt(spain[l - 1])];
+                new Chart("myChart", {
+                    type: "pie",
+                    data: {
+                        labels: labels1,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: data1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                fontColor: 'black',
+                                pointStyle: 'circle',
+                                usePointStyle: true,
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        xmlhttp.open("GET", "https://pomber.github.io/covid19/timeseries.json", true);
+        xmlhttp.send();
+        function aggiornamentodati() {
+            setInterval(function () {
+                italy = myObj.Italy.map(function (e) {
+                    return e.confirmed;
+                });
+                if (italy.length > l) {
+                    l = italy.length;
+                    france = myObj.France.map(function (e) {
+                        return e.confirmed;
+                    });
+                    spain = myObj.Spain.map(function (e) {
+                        return e.confirmed;
+                    });
+                    data1 = [parseInt(italy[l - 1]), parseInt(france[l - 1]), parseInt(spain[l - 1])];
+                }
+            }, 1000)
+        }
+    </script>
+</body>
+
+</html>
